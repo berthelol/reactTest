@@ -1,24 +1,15 @@
-import React from 'react'
-import Tabletodos from './Tabletodos'
-import Formtodos from './Formtodos'
-import { store } from '../reduce/reducer'
+import React from 'react';
+
+//Components
+import Tabletodos from './Tabletodos';
+import Formtodos from './Formtodos';
 
 class Maintodos extends React.Component {
-  constructor() {
-    super()
-
-    this.state = store.getState()
-
-    store.subscribe(() => {
-      this.setState(store.getState())
-    })
-  }
-
   render() {
     return (
       <React.Fragment>
         <Formtodos />
-        <Tabletodos store={this.state}/>
+        <Tabletodos />
       </React.Fragment>
     )
   }

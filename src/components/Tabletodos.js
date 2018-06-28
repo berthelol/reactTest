@@ -1,44 +1,60 @@
-import React from 'react'
-import { actions } from '../reduce/reducer'
+import React from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
 
-const Tabletodos = ({ store }) =>
-  <div>
-    <table className="table">
-      <thead>
-        <tr>
-          <th scope="col">Todo</th>
-          <th scope="col"></th>
-          <th scope="col"></th>
-          <th scope="col">Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        {store.complete.map((e, i) => {
-          return (
-            <tr key={`line-${i}`}>
-              <td className="align-middle">{store.todos[i]}</td>
-              <td className="align-middle" >
-                <button 
-                  onClick={() => actions.updateTodo(i)}
-                  className="btn btn-outline-secondary"
-                  type="button">
-                  Change status
-                </button>
-              </td>
-              <td className="align-middle" >
-                <button 
-                  onClick={() => actions.removeTodo(i)}
-                  className="btn btn-outline-secondary"
-                  type="button">
-                  Remove
-                </button>
-              </td>
-              <td className="align-middle" >{e ? 'Completed' : 'No completed'}</td>
+//Actions
+import { updateTodo, removeTodo } from "../redux/action/";
+//Utils
+import _ from "lodash";
+//Component
+import Todo from "./Todo";
+
+class Tabletodos extends React.Component {
+  renderTodo(todo, index) {
+    const { updateTodo, removeTodo } = this.props;
+    return (
+      <Todo key={index} todo={todo} update={updateTodo} remove={removeTodo} />
+    );
+  }
+
+  render() {
+    const { todos } = this.props;
+    return (
+      <div>
+        <table className="table">
+          <thead>
+            <tr>
+              <th scope="col">Todo</th>
+              <th scope="col" />
+              <th scope="col" />
+              <th scope="col">Status</th>
             </tr>
-          )
-        })}
-      </tbody>
-    </table>
-  </div>
+          </thead>
+          <tbody>{_.map(todos, this.renderTodo.bind(this))}</tbody>
+        </table>
+      </div>
+    );
+  }
+}
 
-  export default Tabletodos
+function mapStateToProps({ todos }) {
+  return {
+    todos
+  };
+}
+
+Tabletodos.propTypes= {
+  todos: PropTypes.arrayOf(
+    PropTypes.shape({
+      value: PropTypes.string,
+      complete: PropTypes.bool
+    })
+  ),
+  update: PropTypes.func,
+  remove: PropTypes.func
+}
+
+export default connect(
+  mapStateToProps,
+  { updateTodo, removeTodo }
+)(Tabletodos);
